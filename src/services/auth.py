@@ -9,6 +9,9 @@ from src.schemas.req.user import UserCreateReq, UserLoginReq
 
 class AuthService:
     async def create_user(self, user: UserCreateReq):
+        user_exist = await User.find_one(User.email == user.email)
+        if user_exist:
+            raise HTTPException(status_code=400, detail=f"Already exist with email: {user.email}")
 
         user_db = User(
             email=user.email,
